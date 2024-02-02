@@ -20,5 +20,8 @@
   "homepage": "https://github.com/fmarcos38/ApiRest-Platzi-NodeJs#readme",
   "dependencies": {
     "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "faker": "^5.5.3"
   }
 }
