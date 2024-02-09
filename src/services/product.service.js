@@ -1,10 +1,10 @@
 const faker = require('faker');
-
+const boom = require('@hapi/boom');
 class ProductsService {
 
   constructor() {
     this.products = [];
-    this.generate(); //genero productos falsos
+    this.generate(); //genero productos falsos al instanciarce la clase
   }
 
   //metodos
@@ -17,45 +17,72 @@ class ProductsService {
       this.products.push({
         id: faker.datatype.uuid(),
         name: faker.commerce.productName(),
-        price: faker.commerce.price()
+        price: faker.commerce.price(),
+        isBlock: faker.datatype.boolean(), //es para roductos q no quiero q se vean
       })
     };
 
     return this.products;
   }
 
+  //--genero una funcion asincroa para simular una peticion a una base de datos
+  async getAllroducst() {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve(this.products);
+      }, 2000);
+    });
+  }
+  //---------------------------------------------------------------------------
   //muestro productos
-  getProducts() {
+  async getProducts() {
+    if(this.products.length === 0){
+      throw boom.notFound('products not found');
+    }
     return this.products;
   }
 
   //muestro un producto
-  getProduct(id) {
-    return this.products.find((product) => product.id === id);
+  async getProduct(id) {
+    //busco el producto
+    const prod = this.products.find((product) => product.id === id);
+    if(!prod){
+      //sin los middlewares NI boom
+      //throw new Error('product not found');
+      //con boom
+      throw boom.notFound('product not found');
+    }
+    //si es un rod q no quiero q se vea
+    if(prod.isBlock){
+      throw boom.unauthorized('product not available');
+      //otra ocion de boom
+      //throw boom.conflict('product not available');
+    }
+    return prod;
   }
 
   //creo un producto
-  createProduct(name, price, id){
-
+  async createProduct(name, price, id){
     if(!name || !price){
-      return 'name and price are required';
+      throw new Error('name and price are required');
     } else {
       const newProduct = {
         id: id || faker.datatype.uuid(),
         name,
         price
-      }
+      };
+      this.products.push(newProduct);
       return newProduct;
     }
   }
 
   //actualizo un producto
-  updateProduct(id, name, price){
+  async updateProduct(id, name, price){
     //busco el indice del producto
     const index = this.products.findIndex((product) => product.id === id);
 
     if(index === -1){
-      return 'product not found';
+      throw new Error('product not found'); //mensaje q me va a mostrar en el catch;
     } else {
       this.products[index].name = name;
       this.products[index].price = price;
@@ -64,12 +91,12 @@ class ProductsService {
   }
 
   //borro un producto
-  deleteProduct(id){
+  async deleteProduct(id){
     //busco el prod
     const prod = this.products.find((product) => product.id === id);
 
     if(!prod){
-      return 'product not found';
+      throw boom.notFound('product not found');
     } else {
       this.products = this.products.filter((product) => product.id !== id);
       return prod;

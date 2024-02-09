@@ -1,5 +1,7 @@
 const express = require('express');
 const ProductsService = require('./../services/product.service');
+const validatorHandler = require('../middlewares/validator.handler');
+const { getProductSchema, createProductSchema, updateProductSchema } = require('../schemas/product.schema');
 
 const router = express.Router();
 
@@ -8,60 +10,71 @@ const serviceProducts = new ProductsService();
 
 
 //muestra  y crea productos falsos
-router.get('/', (req, res) => {
-  const products = serviceProducts.getProducts();
-  res.json(products);
+router.get('/', async (req, res) => {
+  try {
+    const products = await serviceProducts.getProducts();
+    res.json(products);
+  } catch (error) {
+    res.status(404).json({error: error.message});
+  }
 });
 
 //creo un producto
-router.post('/', (req, res) => {
-  const { name, price } = req.body;
-  const { id } = req.params;
-  const product = serviceProducts.createProduct(name, price, id);
-
-  if(!product.name){
-    res.status(400).json(product);
+router.post('/',
+  validatorHandler(createProductSchema, 'body'),
+  async (req, res) => {
+  try {
+    const { name, price } = req.body;
+    const { id } = req.params;
+    const product = await serviceProducts.createProduct(name, price, id);
+    res.json(product);
+  } catch (error) {
+    res.status(404).json({error: error.message});
   }
-  res.status(201).json(product);
 });
 
 //muestro un producto
-router.get('/:id', (req, res) => {
-  const { id } = req.params;
-
-  const product = serviceProducts.getProduct(id);
-  //si no existe
-  if(!product){
-    res.status(404).json({error: 'product not found'});
-  } else {
+router.get('/:id',
+  //utilizo el middleware validator --> y le paso el esquema y la propiedad que quiero validar(en este caso el id que viene por params)
+  validatorHandler(getProductSchema, 'params'),
+  async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const product = await serviceProducts.getProduct(id);
     res.json(product);
+  } catch (error) {
+    //res.status(404).json({error: error.message});
+    //utilizo el middleware para manejar errores
+    next(error);
   }
 });
 
 //actualizo un producto
-router.put('/:id', (req, res) => {
-  const { id } = req.params;
-  const { name, price } = req.body;
+router.put('/:id',
+  validatorHandler(getProductSchema, 'params'),
+  validatorHandler(updateProductSchema, 'body'),
+  async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, price } = req.body;
 
-  const product = serviceProducts.updateProduct(id, name, price);
+    const product = await serviceProducts.updateProduct(id, name, price);
 
-  if(!product){
-    res.status(404).json({error: 'product not found'});
-  } else {
     res.json(product);
+  } catch (error) {
+    res.status(404).json({error: error.message});
   }
 });
 
 //borro un producto
-router.delete('/:id', (req, res) => {
-  const { id } = req.params;
-  //busco el producto
-  const product = serviceProducts.deleteProduct(id);
-
-  if(!product){
-    res.status(404).json({error: 'product not found'});
-  } else {
-    res.json({deleted: product});
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    //busco el producto
+    const respuesta = await serviceProducts.deleteProduct(id);
+  res.json(respuesta);
+  } catch (error) {
+    res,status(404).json({error: error.message});
   }
 });
 
