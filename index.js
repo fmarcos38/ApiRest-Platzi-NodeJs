@@ -22,10 +22,10 @@ const options = {
   }
 };
 app.use(cors(options));
- */
+*/
+
 //------llamo a la funcion de las rutas
 routerApi(app);
-
 
 //------middleware para manejar errores (estos son los middleware de error)
 //------por eso los declaro al final (siempre despues de las rutas
