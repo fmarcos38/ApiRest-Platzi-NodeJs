@@ -1,7 +1,8 @@
 const faker = require('faker'); //se utiliza para generar datos falsos
 const boom = require('@hapi/boom'); //se utiliza para manejar errores
 const getConnection = require('../libs/postgres'); //se utiliza para conectarse a la base de datos
-const { Client } = require('pg');
+const sequelize = require('../libs/sequelize'); //se utiliza para conectarse a la base de datos
+
 class UsersService {
   constructor(){
     //declaro el array de users q oy a tener en memoria
@@ -28,39 +29,18 @@ class UsersService {
     return this.users;
   };
 
-   //muestro todos los usuarios
-  async find(){
+   //muestra usuarios Conexion Client
+  async findClient(){
     const client= await getConnection();
     const rta=await client.query('SELECT * FROM users');
     return rta.rows;
   }
-  //muestro todos los usuarios
-  /*  async getUsers(){
-    const client = new Client({
-      user: 'postgres',
-      host: 'localhost',
-      database: 'my_store',
-      password: 'postgres',
-      port: 5432, // Puerto por defecto de PostgreSQL
-    });
-
-    // Conectar a la base de datos
-    client.connect()
-      .then(() => console.log('Conexión exitosa a la base de datos'))
-      .catch(err => console.error('Error al conectar a la base de datos', err))
-      .finally(() => client.end()); // Cierra la conexión al finalizar
-
-    // Ejemplo de consulta a la base de datos
-    const respta = await client.query('SELECT NOW()', (err, res) => {
-      if (err) {
-        console.error('Error al ejecutar la consulta', err);
-      } else {
-        console.log('Resultado de la consulta:', res.rows[0]);
-      }
-    });
-
-    return respta;
-  }; */
+  //muestra usuarios Conexion Sequelize
+  async findSequelize() {
+    const query = 'SELECT * FROM users';
+    const [data] = await sequelize.query(query);
+    return data;
+  };
 
   //muestro un usuario por id
   async getUser(id){

@@ -7,9 +7,12 @@ const PASSWORD = encodeURIComponent(config.dbPassword);
 const URI = `postgres://${USER}:${PASSWORD}@${config.dbHost}:${config.dbPort}/${config.dbName}`;
 
 //creo instancia de sequelize
-const sequelize = new Sequelize(URI, {
+/* const sequelize = new Sequelize(URI, {
   dialect: 'postgres', //indicamos que vamos a usar postgres
   logging: false,
+}); */
+var sequelize = new Sequelize(config.dbName, USER, PASSWORD, {
+  dialect: 'postgres'
 });
 
 module.exports = sequelize;

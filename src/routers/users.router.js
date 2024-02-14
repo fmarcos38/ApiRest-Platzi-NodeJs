@@ -10,7 +10,8 @@ const serviceUser = new userServices(); //creo una instancia de UsersService(por
 router.get('/', async (req, res) => {
   try {
     //const users = await serviceUser.getUsers();
-    const users = await serviceUser.find();
+    //const users = await serviceUser.findClient();
+    const users = await serviceUser.findSequelize();
     res.json(users);
   } catch (error) {
     res.status(404).json({
