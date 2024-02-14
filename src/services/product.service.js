@@ -1,15 +1,15 @@
 const faker = require('faker');
 const boom = require('@hapi/boom');
+const sequelize = require('../libs/sequelize');
 class ProductsService {
 
   constructor() {
     this.products = [];
-    this.generate(); //genero productos falsos al instanciarce la clase
   }
 
   //metodos
   //genero productos falsos
-  generate() {
+  /* generate() {
     const limit = 10;
 
     //creacion automatica de productos falsos
@@ -23,23 +23,15 @@ class ProductsService {
     };
 
     return this.products;
-  }
+  } */
 
-  //--genero una funcion asincroa para simular una peticion a una base de datos
-  async getAllroducst() {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve(this.products);
-      }, 2000);
-    });
-  }
+
   //---------------------------------------------------------------------------
   //muestro productos
   async getProducts() {
-    if(this.products.length === 0){
-      throw boom.notFound('products not found');
-    }
-    return this.products;
+    const query = 'SELECT * FROM products';
+    const [data, metadata] = await sequelize.query(query); //saquelize tamb deja realizar querys
+    return { data, metadata };
   }
 
   //muestro un producto

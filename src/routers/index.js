@@ -1,6 +1,6 @@
 const express = require('express');
 //me traigo las rutas
-const productsRouter = require('./products.router');
+//const productsRouter = require('./products.router');
 const userRouter = require('./users.router');
 //creo funcion para las rutas
 function routerApi(app) {
@@ -10,7 +10,7 @@ function routerApi(app) {
   app.use('/api/v1', router);
 
   //uso las rutas
-  router.use('/products', productsRouter);
+  //router.use('/products', productsRouter);
   router.use('/users', userRouter);
 }
 

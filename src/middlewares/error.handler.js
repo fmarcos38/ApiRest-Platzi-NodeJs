@@ -1,34 +1,29 @@
-const { stack } = require("../routers/products.router");
+//const { stack } = require("../routers/products.router");
 
 //muestra por consola el error y se lo pasa al sgt middleware
-function logErrors(error, req, res, next) {
-  console.log(error);
-  next(error);
+function logErrors (err, req, res, next) {
+  console.error(err);
+  next(err);
 }
 
 
 //mando el error al cliente
-function errorHandler(error, req, res, next) {
-  res.status(404).json({
-    error: error.message,
-    stack: error.stack
+function errorHandler(err, req, res, next) {
+  res.status(500).json({
+    message: err.message,
+    stack: err.stack,
   });
 }
 
 
 //creo middleware para boom
-function boomErrorHandler(error, req, res, next) {
-  if (error.isBoom) {
-    const { output } = error;
+function boomErrorHandler(err, req, res, next) {
+  if (err.isBoom) {
+    const { output } = err;
     res.status(output.statusCode).json(output.payload);
-  }else{
-    next(error);
   }
+  next(err);
 }
 
 
-module.exports = {
-  logErrors,
-  errorHandler,
-  boomErrorHandler,
-}
+module.exports = { logErrors, errorHandler, boomErrorHandler }
