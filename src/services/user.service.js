@@ -42,17 +42,6 @@ class UsersService {
     return data;
   };
 
-  //muestro un usuario por id
-  async getUser(id){
-    const user = this.users.find(u => u.id === id);
-
-    if(!user){
-      throw boom.notFound('user not found');
-    }
-
-    return user;
-  };
-
   //creo usuario
   async createUser(data){
     console.log("data", data);
