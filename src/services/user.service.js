@@ -45,21 +45,31 @@ class UsersService {
     return data;
   };
 
+  //muestra un usuario por id
+  async getUser(id){
+    const user = await sequelize.models.User.findByPk(id);
+    if (!user) {
+      throw boom.notFound('User not found');
+    }
+    return user;
+  }
+
   //creo usuario
   async createUser(data){
-    console.log("data", data);
-    const newUser = {
-      id: faker.datatype.uuid(),
-      ...data,
-    };
-
-    this.users.push(newUser);
-    return newUser;
-  };
+    const newser = await sequelize.models.User.create(data);
+    return newser;
+  }
 
   //actualizo usuario
   async updateUser(id, changer){
+    const user = await this.getUser(id);
+    return await user.update(changer);
+  }
 
+  //elimino usuario
+  async deleteUser(id){
+    const user = await this.getUser(id);
+    return await user.destroy();
   }
 }
 

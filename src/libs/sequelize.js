@@ -16,7 +16,7 @@ var sequelize = new Sequelize(config.dbName, USER, PASSWORD, {
 //inicializo los modelos
 setupModels(sequelize);
 
-sequelize.sync({ force: true }) //force: true, para que se borren las tablas y se creen nuevamente
+sequelize.sync({ force: false }) //force: true, para que se borren las tablas y se creen nuevamente
   .then(() => {
     console.log('Database & tables created!');
   });
