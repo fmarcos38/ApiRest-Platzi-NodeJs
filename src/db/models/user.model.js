@@ -1,59 +1,45 @@
 const { Model, DataTypes, Sequelize } = require('sequelize');
 
-const USER_TABLE = 'users'; //nombre de la tabla "users"
+const USER_TABLE = 'users';
 
-//creo schema de la tabla este schema define la estructura de la tabla en la DB
-const userSchema = {
-  //atributos de la tabla
+const UserSchema = {
   id: {
-    type: DataTypes.UUID,
-    defaultValue: Sequelize.UUIDV4,
+    allowNull: false,
     autoIncrement: true,
     primaryKey: true,
+    type: DataTypes.INTEGER
   },
-  name: {
-    allowNull:false,
-    type:DataTypes.STRING,
-  },
-  email:{
-    allowNull:false,
-    type:DataTypes.STRING,
-    unique:true,
-  },
-  password:{
-    allowNull:false,
-    type:DataTypes.STRING
-  },
-  isAdmin: {
-    type: DataTypes.BOOLEAN,
+  email: {
     allowNull: false,
+    type: DataTypes.STRING,
+    unique: true,
+  },
+  password: {
+    allowNull: false,
+    type: DataTypes.STRING
   },
   createdAt: {
+    allowNull: false,
     type: DataTypes.DATE,
-    field: 'created_at', //nombre del campo en la base de datos
-    defaultValue: Sequelize.NOW,
-  },
-};
+    field: 'create_at',
+    defaultValue: Sequelize.NOW
+  }
+}
 
-//creo la clase User q extiende de Model, model tiene los metodos(querys) para interactuar con la base de datos
 class User extends Model {
-  static associate() { }
-  // defino las relaciones
-
-  //realizo conexion con la tabla
-  static config(sequelize) {
-    return {
-      sequelize, //tipos de coneion
-      tableName: USER_TABLE, //nombre de la tabla
-      modelName: 'User', //nombre del modelo
-      timestamps: false, //no quiero que se creen los campos de createdAt y updatedAt
-    };
+  static associate() {
+    // associate
   }
 
-};
+  static config(sequelize) {
+    return {
+      sequelize,
+      tableName: USER_TABLE,
+      modelName: 'User',
+      timestamps: false
+    }
+  }
+}
 
-module.exports = {
-  USER_TABLE,
-  userSchema,
-  User,
-};
+
+module.exports = { USER_TABLE, UserSchema, User }

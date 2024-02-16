@@ -8,30 +8,12 @@ class ProductsService {
   }
 
   //metodos
-  //genero productos falsos
-  /* generate() {
-    const limit = 10;
-
-    //creacion automatica de productos falsos
-    for (let i = 0; i < limit; i++) {
-      this.products.push({
-        id: faker.datatype.uuid(),
-        name: faker.commerce.productName(),
-        price: faker.commerce.price(),
-        isBlock: faker.datatype.boolean(), //es para roductos q no quiero q se vean
-      })
-    };
-
-    return this.products;
-  } */
-
-
   //---------------------------------------------------------------------------
   //muestro productos
   async getProducts() {
     const query = 'SELECT * FROM products';
-    const [data, metadata] = await sequelize.query(query); //saquelize tamb deja realizar querys
-    return { data, metadata };
+    const [data] = await sequelize.query(query);
+    return data;
   }
 
   //muestro un producto

@@ -37,8 +37,11 @@ class UsersService {
   }
   //muestra usuarios Conexion Sequelize
   async findSequelize() {
-    const query = 'SELECT * FROM users';
-    const [data] = await sequelize.query(query);
+    //opc 1
+    /* const query = 'SELECT * FROM users';
+    const [data] = await sequelize.query(query); */
+    //opc 2
+    const data = await sequelize.models.User.findAll(); //de esta manera se está utilizando Prog orientada a objetos
     return data;
   };
 
