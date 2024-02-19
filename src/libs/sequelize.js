@@ -8,7 +8,7 @@ const USER = encodeURIComponent(config.dbUser);
 const PASSWORD = encodeURIComponent(config.dbPassword);
 const URI = `postgres://${USER}:${PASSWORD}@${config.dbHost}:${config.dbPort}/${config.dbName}`;
 
-//creo instancia de sequelize
+//creo instancia de sequelize SIN migraciones
 var sequelize = new Sequelize(config.dbName, USER, PASSWORD, {
   dialect: 'postgres'
 });
@@ -16,10 +16,16 @@ var sequelize = new Sequelize(config.dbName, USER, PASSWORD, {
 //inicializo los modelos
 setupModels(sequelize);
 
-sequelize.sync({ force: false }) //force: true, para que se borren las tablas y se creen nuevamente
+//si no utilizo migraciones, puedo usar el metodo sync para crear las tablas
+//force: true, para que se borren las tablas y se creen nuevamente
+/* sequelize.sync({ force: false })
   .then(() => {
     console.log('Database & tables created!');
-  });
+  }); */
 
 
 module.exports = sequelize;
+
+
+
+

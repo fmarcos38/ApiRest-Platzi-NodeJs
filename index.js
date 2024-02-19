@@ -3,7 +3,7 @@ const routerApi = require('./src/routers/index');
 //cors es un middleware que me permite hacer peticiones desde otros dominios
 const cors = require('cors');
 
-const { logErrors, errorHandler, boomErrorHandler } = require('./src/middlewares/error.handler');
+const { logErrors, errorHandler, boomErrorHandler, ormErrorHandler } = require('./src/middlewares/error.handler');
 
 const app = express();
 const port = 3000;
@@ -30,6 +30,7 @@ routerApi(app);
 //------middleware para manejar errores (estos son los middleware de error)
 //------por eso los declaro al final (siempre despues de las rutas
 app.use(logErrors);
+app.use(ormErrorHandler);//middleware para manejar errores de sequelize
 app.use(boomErrorHandler);//middlewara para manejar errores de boom
 app.use(errorHandler);
 
