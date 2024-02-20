@@ -4,7 +4,7 @@ const sequelize = require('../libs/sequelize');
 class ProductsService {
 
   constructor() {
-    this.products = [];
+    this.products = [];//quitar
   }
 
   //metodos
@@ -35,19 +35,18 @@ class ProductsService {
     return prod;
   }
 
+  //muestra productos CON relacion a la categoria
+  async find() {
+    const products = await models.Product.findAll({
+      include: ['category']
+    });
+    return products;
+  }
+
   //creo un producto
-  async createProduct(name, price, id){
-    if(!name || !price){
-      throw new Error('name and price are required');
-    } else {
-      const newProduct = {
-        id: id || faker.datatype.uuid(),
-        name,
-        price
-      };
-      this.products.push(newProduct);
-      return newProduct;
-    }
+  async create(data) {
+    const newProduct = await models.Product.create(data);
+    return newProduct;
   }
 
   //actualizo un producto

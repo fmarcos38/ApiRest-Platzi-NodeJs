@@ -35,9 +35,13 @@ const UserSchema = {
 }
 
 class User extends Model {
-  static associate() {
-    // associate
-  }
+  //metodo para definir la relacion biDireccional, 1:1 con la tabla customer
+    static associate(models) {
+      this.hasOne(models.Customer, {
+        as: 'customer',
+        foreignKey: 'userId', //esta dato viene de la tabla customer
+      });
+    }
 
   static config(sequelize) {
     return {

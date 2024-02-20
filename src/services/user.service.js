@@ -54,6 +54,23 @@ class UsersService {
     return user;
   }
 
+  /*--------metodos find con relaciones-----------*/
+  async find() {
+    const rta = await models.User.findAll({
+      include: ['customer']
+    });
+    return rta;
+  }
+
+  async findOne(id) {
+    const user = await models.User.findByPk(id);
+    if (!user) {
+      throw boom.notFound('user not found');
+    }
+    return user;
+  }
+  /*-------------------*/
+
   //creo usuario
   async createUser(data){
     const newser = await sequelize.models.User.create(data);
