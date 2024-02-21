@@ -1,8 +1,5 @@
 const { Model, DataTypes, Sequelize } = require('sequelize');
 const { USER_TABLE } = require('./user.model');
-const { on } = require('nodemon');
-const Unique = require('faker/lib/unique');
-const unique = require('faker/vendor/unique');
 
 //creo el nombre de la tabla
 const CUSTOMER_TABLE = 'customer';
@@ -51,6 +48,10 @@ const CustomerSchema = {
 class Customer extends Model {
   static associate(models) {
     this.belongsTo(models.User, {as: 'user'}); //relacion 1:1 con la tabla user, esto es un alias --> {as: 'user'}
+    /* this.hasMany(models.Order, { //relacion 1:N con la tabla Order (tira ERROR)
+      as: 'orders',
+      foreignKey: 'customerId'
+    }); */
   }
 
   static config(sequelize) {

@@ -1,35 +1,23 @@
-const joi = require('joi');
+const Joi = require('joi');
 
-//defino los parametros q utilizaré en el esquema
-const branId = joi.string().uuid();
-const name = joi.string().max(50);
+const id = Joi.number().integer();
+const customerId = Joi.number().integer();
+const orderId = Joi.number().integer();
+const productId = Joi.number().integer();
+const amount = Joi.number().integer().min(1);
 
-//defino esquema para obtener todos las marcas
-const getAllBrans = joi.object({
-  limit: joi.number().integer(),
-  offset: joi.number().integer(),
+const getOrderSchema = Joi.object({
+  id: id.required(),
 });
 
-//defino esquema para obtener una marca
-const getBran = joi.object({
-  id: branId.required(),
+const createOrderSchema = Joi.object({
+  customerId: customerId.required(),
 });
 
-//defino esquema para la creación de una marca
-const createBran = joi.object({
-  name: name.required(),
+const addItemSchema = Joi.object({
+  orderId: orderId.required(),
+  productId: productId.required(),
+  amount: amount.required(), //cantidad de productos
 });
 
-//defino esquema para la actualización de una marca
-const updateBran = joi.object({
-  id: branId.required(),
-  name: name,
-});
-
-//exporto los esquemas
-module.exports = {
-  getAllBrans,
-  getBran,
-  createBran,
-  updateBran,
-};
+module.exports = { getOrderSchema, createOrderSchema, addItemSchema };

@@ -1,7 +1,7 @@
 const express = require('express');
 const ProductsService = require('./../services/product.service');
 const validatorHandler = require('../middlewares/validator.handler');
-const { getProductSchema, createProductSchema, updateProductSchema } = require('../schemas/product.schema');
+const { getProductSchema, createProductSchema, updateProductSchema, queryProductSchema } = require('../schemas/product.schema');
 
 const router = express.Router();
 
@@ -10,14 +10,17 @@ const serviceProducts = new ProductsService();
 
 
 //muestra  y crea productos falsos
-router.get('/', async (req, res) => {
-  try {
-    const products = await serviceProducts.getProducts();
-    res.json(products);
-  } catch (error) {
-    res.status(404).json({error: error.message});
+router.get('/',
+  validatorHandler(queryProductSchema, 'query'),
+  async (req, res, next) => {
+    try {
+      const products = await service.find(req.query);
+      res.json(products);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 //creo un producto
 router.post('/',
