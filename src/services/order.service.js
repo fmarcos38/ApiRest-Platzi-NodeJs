@@ -45,6 +45,21 @@ class OrderService {
     return { id };
   }
 
+  //obtiene las ordenes de un cliente - pero las busco a travez del usuario
+  async findOrderByUser(userId) {
+    const orders = await models.Order.findAll({
+      where: {
+        '$customer.user.id$': userId //aca se hace el join(asociacion) con la tabla user
+      },
+      include: [
+        {
+          association: 'customer',
+          include: ['user']
+        }
+      ]
+    });
+    return orders;
+  }
 }
 
 module.exports = OrderService;

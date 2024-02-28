@@ -2,7 +2,7 @@ const faker = require('faker'); //se utiliza para generar datos falsos
 const boom = require('@hapi/boom'); //se utiliza para manejar errores
 const getConnection = require('../libs/postgres'); //se utiliza para conectarse a la base de datos
 const sequelize = require('../libs/sequelize'); //se utiliza para conectarse a la base de datos
-
+const bcrypt = require('bcrypt'); //se utiliza para encriptar la contraseña
 class UsersService {
   constructor(){
     //declaro el array de users q oy a tener en memoria
@@ -69,11 +69,27 @@ class UsersService {
     }
     return user;
   }
+
+  //busco por email
+  async findByEmail(email){
+    const user = await sequelize.models.User.findOne({ where: { email } }); //puede q no sea necesario el sequelize
+    if (!user) {
+      throw boom.notFound('User not found');
+    }
+    return user;
+  }
+
   /*-------------------*/
 
   //creo usuario
   async createUser(data){
-    const newser = await sequelize.models.User.create(data);
+    const hash = await bcrypt.hash(data.password, 10);
+    const newser = await sequelize.models.User.create({ //de esta forma clono el objeto y le agrego el password encriptado
+      ...data,
+      password: hash,
+    });
+    //elimino el envio del password (este forma es solo para sequelize)
+    delete newser.dataValues.password;
     return newser;
   }
 

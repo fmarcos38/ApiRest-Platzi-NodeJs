@@ -24,6 +24,9 @@ const options = {
 app.use(cors(options));
 */
 
+//para acceder al archivo de la estrategia de autenticacion
+require('./src/utils/auth');
+
 //------llamo a la funcion de las rutas
 routerApi(app);
 
