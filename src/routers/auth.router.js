@@ -1,34 +1,45 @@
 const express = require('express');
 const passport = require('passport');
-const { user } = require('pg/lib/defaults');
-const jwt = require('jsonwebtoken');
-const { config } = require('./../config/config'); //esto es para traer el secret del archivo .env
 
+const AuthService = require('./../services/auth.service');
 
 const router = express.Router();
-
+const service = new AuthService();
 
 router.post('/login',
-  passport.authenticate('local', { session: false }),
+  passport.authenticate('local', {session: false}),
   async (req, res, next) => {
-  try {
-    const users = req.user; //esto es lo que devuelve la estrategia local
-    //creo un token con la info del usuario osea el payload
-    const payload = {
-      sub: users.id,
-      role: users.role
-    };
-    //creo el token con el payload y el secret
-    const token = jwt.sign(payload, config.jwtSecret);
-
-    res.status(201).json({
-      user,
-      token,
-      message: 'user logeado'
-    });
-  } catch (error) {
-    next(error);
+    try {
+      const user = req.user;
+      res.json(service.signToken(user));
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
+
+router.post('/recovery',
+  async (req, res, next) => {
+    try { //podría agregar un schema para validar la info q recibos
+      const { email } = req.body;
+      const rta = await service.sendRecovery(email);
+      res.json(rta);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.post('/change-password',
+  async (req, res, next) => {
+    try {
+      const { token, newPassword } = req.body;
+      const rta = await service.changePassword(token, newPassword);
+      res.json(rta);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 module.exports = router;

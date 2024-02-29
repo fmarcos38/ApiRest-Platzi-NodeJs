@@ -22,6 +22,12 @@ const UserSchema = {
     allowNull: false,
     type: DataTypes.STRING
   },
+  //campo para el recoveryToken (agregado mediante migración)
+  recoveryToken: {
+    allowNull: true,
+    type: DataTypes.STRING,
+    field: 'recovery_token' //lo renombro para que coincida con el nombre de la columna en la tabla
+  },
   isAdmin: {
     type: DataTypes.BOOLEAN,
     defaultValue: false

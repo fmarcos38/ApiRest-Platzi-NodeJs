@@ -1,19 +1,22 @@
-"use strict";
+//archivo de ejemplo NO lo uso en el proyecto
 const nodemailer = require("nodemailer");
 
+//servidor de correo
 const transporter = nodemailer.createTransport({
-  host: "smtp.forwardemail.net",
+  host: "smtp.forwardemail.net", //acá va el proveedor de correo Q yo quiero usar(gmail, hotmail, etc.)
   port: 465,
   secure: true,
   auth: {
     // TODO: replace `user` and `pass` values from <https://forwardemail.net>
-    user: "REPLACE-WITH-YOUR-ALIAS@YOURDOMAIN.COM",
+    //remplazoo con el usuario y contraseña que me da el proveedor de correo
+    user: "REPLACE-WITH-YOUR-ALIAS@YOURDOMAIN.COM", //poner variables de entorno
     pass: "REPLACE-WITH-YOUR-GENERATED-PASSWORD",
   },
 });
 
 // async..await is not allowed in global scope, must use a wrapper
-async function main() {
+//construcción del correo
+async function sendMail() {
   // send mail with defined transport object
   const info = await transporter.sendMail({
     from: '"Fred Foo 👻" <foo@example.com>', // sender address
@@ -33,4 +36,4 @@ async function main() {
   //
 }
 
-main().catch(console.error);
+sendMail().catch(console.error);
